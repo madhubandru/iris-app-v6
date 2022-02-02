@@ -7,7 +7,7 @@ from io import BytesIO
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.neural_network import MLPClassifier
+from sklearn.neighbors import KNeighborsClassifier
 
 # NOTE: Make sure that the outcome column is labeled 'target' in the data file
 tpot_data = pd.read_csv('prepared_data.csv')
@@ -15,8 +15,8 @@ features = tpot_data.drop('target', axis=1)
 training_features, testing_features, training_target, testing_target = \
             train_test_split(features, tpot_data['target'], random_state=None)
 
-# Average CV score on the training set was: 0.9742753623188406
-exported_pipeline = MLPClassifier(alpha=0.01, learning_rate_init=0.001)
+# Average CV score on the training set was: 0.9829710144927537
+exported_pipeline = KNeighborsClassifier(n_neighbors=8, p=1, weights="distance")
 
 exported_pipeline.fit(training_features, training_target)
 
@@ -53,7 +53,7 @@ def predict():
     #decode the output
     try:
       with open('target_encoder.pkl', 'rb') as f:
-          target_encoder = pickle.load(f))
+          target_encoder = pickle.load(f)
       result = target_encoder.inverse_transform(result)
       except:
         print("No target encoder exist")
